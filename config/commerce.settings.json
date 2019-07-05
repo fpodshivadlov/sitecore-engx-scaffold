@@ -1,0 +1,11 @@
+{
+    "hostNames": [
+        "bizfx.#{sitecore_prefix}.local",
+        "commerceauthoring.#{sitecore_prefix}.local",
+        "commerceminions.#{sitecore_prefix}.local",
+        "commerceops.#{sitecore_prefix}.local",
+        "commerceshops.#{sitecore_prefix}.local"
+    ],
+
+    "serviceProxyProjectPath": "Commerce\\Sitecore.Commerce.ServiceProxy\\Sitecore.Commerce.ServiceProxy.csproj"
+}

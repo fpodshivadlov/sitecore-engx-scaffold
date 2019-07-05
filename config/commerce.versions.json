@@ -1,0 +1,14 @@
+[
+  {
+    "name": "Sitecore Experience Commerce 9.1 Initial Release",
+    "value": {
+      "name": "Sitecore Experience Commerce 9.1.0",
+      "vagrantBoxName": "w16s-xc910",
+      "exactVersion": "9.1.0",
+      "sitecoreCommerceNetFrameworkVersion": "471"
+    },
+    "compatibleWithSitecoreVersion": [
+      "9.1.1"
+    ]
+  }
+]

@@ -1,0 +1,64 @@
+{
+  "AppSettings": {
+    "SiteTitle": "Sitecore Commerce Engine",
+    "BootStrapFile": "Global",
+    "DeploymentId": "Deployment01",
+    "EnvironmentName": "HabitatMinions",
+    "EncryptionProtectionType": "Machine",
+    "EncryptionCertificateHash": "Enter a valid certificate thumbprint for a PXF file. X-509 not supported yet",
+    "EncryptionSID": "Enter a valid SID for a domain registered user",
+    "EncryptionKeyStorageLocation": "c:\\Encryption-Keys\\",
+    "SitecoreIdentityServerUrl": "https://sc9.identityserver",
+    "AllowedOrigins": [
+      "https://localhost:4200",
+      "https://sc9.commerce",
+      "https://bizfx.sc9.local"
+    ],
+    "AntiForgeryEnabled": true,
+    "CommerceServicesHostPostfix": "sc9.local",
+    "UseHttpsInKestrel": true,
+    "SslPort": 5000,
+    "SslPfxPath": "wwwroot/localhost.pfx",
+    "SslPfxPassword": "sitecore"
+  },
+  "ApplicationInsights": {
+    "InstrumentationKey": "",
+    "MinimumLevel": "Warning",
+    "DeveloperMode": true,
+    "TelemetryEnabled": false
+  },
+  "Logging": {
+    "IncludeScopes": false,
+    "LogLevel": {
+      "Default": "Warning",
+      "System": "Warning",
+      "Microsoft": "Warning"
+    },
+    "ApplicationInsightsLoggingEnabled": false,
+    "PipelineTraceLoggingEnabled": false,
+    "SerilogLoggingEnabled": true
+  },
+  "Serilog": {
+    "Using": ["Serilog.Sinks.Literate", "Serilog.Sinks.File"],
+    "MinimumLevel": {
+      "Default": "Warning",
+      "Override": {
+        "Microsoft": "Warning",
+        "System": "Warning"
+      }
+    },
+    "FileSizeLimitBytes": 100000000
+  },
+  "Certificates": {
+    "Certificates": [
+      {
+        "Thumbprint": "B516E1E9FA3841DCA2B4512D6B3700E44A230FA3",
+        "DefaultRoles": [
+          "sitecore\\QA",
+          "sitecore\\Commerce Business User"
+        ]
+      }
+    ],
+    "CertificateHeaderName": "X-CommerceEngineCert"
+  }
+}

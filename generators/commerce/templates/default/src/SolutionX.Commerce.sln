@@ -1,0 +1,53 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2002
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Commerce", "Commerce", "{389FC06B-F543-41B8-9874-726DA9878DDC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3A330984-9652-4DA1-99D3-B55E6DEAC6AA}"
+	ProjectSection(SolutionItems) = preProject
+		cake.config = cake.config
+		Commerce\WebDeployUpdates\CECloud.parameters.xml = Commerce\WebDeployUpdates\CECloud.parameters.xml
+		nuget.config = nuget.config
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sitecore.Commerce.Engine", "Commerce\Sitecore.Commerce.Engine\Sitecore.Commerce.Engine.csproj", "{3E68F9A9-396C-487C-BEB9-C24E47721E2F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CECloud_SCCPL", "CECloud_SCCPL", "{0946C395-5DF9-48DA-BB53-DC5CA2A4BEFE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CopyToRoot", "CopyToRoot", "{541693FF-FDF0-4257-8EF4-814D8B2C3E21}"
+	ProjectSection(SolutionItems) = preProject
+		Commerce\WebDeployUpdates\CECloud_SCCPL\CopyToRoot\CreateUser.Global.sql = Commerce\WebDeployUpdates\CECloud_SCCPL\CopyToRoot\CreateUser.Global.sql
+		Commerce\WebDeployUpdates\CECloud_SCCPL\CopyToRoot\CreateUser.Shared.sql = Commerce\WebDeployUpdates\CECloud_SCCPL\CopyToRoot\CreateUser.Shared.sql
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "<%= solutionX %>.Commerce.Testing", "Commerce\<%= solutionX %>.Commerce.Testing\<%= solutionX %>.Commerce.Testing.csproj", "{2E22EF56-F6AF-4D0C-A788-92061E9BABC9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3E68F9A9-396C-487C-BEB9-C24E47721E2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E68F9A9-396C-487C-BEB9-C24E47721E2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E68F9A9-396C-487C-BEB9-C24E47721E2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E22EF56-F6AF-4D0C-A788-92061E9BABC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E22EF56-F6AF-4D0C-A788-92061E9BABC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E22EF56-F6AF-4D0C-A788-92061E9BABC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E22EF56-F6AF-4D0C-A788-92061E9BABC9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3E68F9A9-396C-487C-BEB9-C24E47721E2F} = {389FC06B-F543-41B8-9874-726DA9878DDC}
+		{0946C395-5DF9-48DA-BB53-DC5CA2A4BEFE} = {3A330984-9652-4DA1-99D3-B55E6DEAC6AA}
+		{541693FF-FDF0-4257-8EF4-814D8B2C3E21} = {0946C395-5DF9-48DA-BB53-DC5CA2A4BEFE}
+		{2E22EF56-F6AF-4D0C-A788-92061E9BABC9} = {389FC06B-F543-41B8-9874-726DA9878DDC}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {32813392-1C11-4D75-BF11-1ECBEF674669}
+	EndGlobalSection
+EndGlobal

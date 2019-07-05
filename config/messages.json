@@ -16,5 +16,11 @@
   },
   "sitecoreUpdate": {
     "prompt": "Select an update:"
+  },
+  "sitecoreCommerceVersion": {
+    "prompt": "Select a version of Sitecore Commerce:"
+  },
+  "sitecoreCommercePluginName": {
+    "prompt": "Provide a name of a plugin:"
   }
 }

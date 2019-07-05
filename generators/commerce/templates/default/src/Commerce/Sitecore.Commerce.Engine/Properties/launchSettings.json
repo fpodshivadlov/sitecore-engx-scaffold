@@ -1,0 +1,25 @@
+{
+    "iisSettings": {
+        "windowsAuthentication": false,
+        "anonymousAuthentication": true,
+        "iisExpress": {
+            "applicationUrl": "https://commerceauthoring.sc9.local/",
+            "sslPort": 0
+        }
+    },
+    "profiles": {
+        "Engine": {
+            "commandName": "Project",
+            "launchUrl": "https://commerceauthoring.sc9.local/api/$metadata",
+            "environmentVariables": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
+        },
+        "Engine - Production": {
+            "commandName": "Project",
+            "environmentVariables": {
+                "ASPNETCORE_ENVIRONMENT": "Production"
+            }
+        }
+    }
+}

@@ -26,5 +26,27 @@
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}/output",
         },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Sitecore Commerce solution scaffold",
+            "program": "${env:APPDATA}\\npm\\node_modules\\yo\\lib\\cli.js",
+            "args": [
+                "sitecore-engx-scaffold:commerce"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/output",
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Sitecore Commerce plugin project scaffold",
+            "program": "${env:APPDATA}\\npm\\node_modules\\yo\\lib\\cli.js",
+            "args": [
+                "sitecore-engx-scaffold:commerceplugin"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/output",
+        },
     ]
 }
