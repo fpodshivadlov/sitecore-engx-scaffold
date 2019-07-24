@@ -3,7 +3,6 @@ const chalk = require('chalk');
 const uuidv4 = require('uuid/v4');
 
 const BaseGenerator = require('../../lib/base-generator');
-const HelixGenerator = require('../app');
 const solutionUtils = require('../../lib/solution-utils.js');
 const utils = require('../../lib/utils.js');
 
@@ -17,20 +16,31 @@ module.exports = class SitecoreCommerceGenerator extends BaseGenerator {
   constructor(args, opts) {
     super(args, opts);
 
-    const instantiate = (Generator, path) => {
-      Generator.resolved = require.resolve(path);
-      Generator.namespace = this.env.namespace(path);
-      return this.env.instantiate(Generator, { opts, arguments: opts.arguments });
-    };
+    const config = this.config.getAll();
+    if (config) {
+      this.options.solutionNameUri = config.solutionNameUri;
+    }
+    if (config && config.promptValues) {
+      this.options.solutionName = config.promptValues.solutionName;
+      this.options.sitecoreVersion = config.promptValues.sitecoreVersion;
+      this.options.sitecoreUpdate = config.promptValues.sitecoreUpdate;
+    }
 
-    // TODO: investigate for better composability approach
-    this.sitecoreGenerator = instantiate(HelixGenerator, "../app");
+    const sitecoreUpdate = this.options.sitecoreUpdate && this.options.sitecoreUpdate.exactVersion;
+    if (!sitecoreUpdate) {
+      return this._showErrorAndExit(`Sitecore initial scaffolding required.`);
+    }
+
+    this.options.compatibleCommerceVersions = commerceVersions.filter(x => x.compatibleWithSitecoreVersion.includes(sitecoreUpdate));
+    if (this.options.compatibleCommerceVersions.length < 1) {
+      return this._showErrorAndExit(`No Sitecore Commerce available for Sitecore ${this.options.sitecoreUpdate.exactVersion}.`);
+    }
 
     this.option('sitecoreCommerceVersion', {
        type: String,
        required: true,
        desc: 'The version of Sitecore Commerce to use.',
-       default: commerceVersions[0].value,
+       default: this.options.compatibleCommerceVersions[0].value,
     });
 
     this.options.serviceProxyGuidSeed = "Sitecore.Commerce.ServiceProxy";
@@ -38,41 +48,36 @@ module.exports = class SitecoreCommerceGenerator extends BaseGenerator {
   }
 
   async prompting() {
-    await this.sitecoreGenerator.prompting();
-
-    const sitecoreVersion = this.sitecoreGenerator.options.sitecoreUpdate.exactVersion;
-    const compatibleCommerceVersions = commerceVersions.filter(x => x.compatibleWithSitecoreVersion.includes(sitecoreVersion));
-    if (compatibleCommerceVersions.length < 1) {
-      return this._showErrorAndExit(`No Sitecore Commerce available for Sitecore ${this.options.sitecoreUpdate.exactVersion}.`);
-    }
-
     let answers = await this.prompt([{
       type: 'list',
       name: 'sitecoreCommerceVersion',
       message: msg.sitecoreCommerceVersion.prompt,
-      choices: compatibleCommerceVersions,
+      choices: this.options.compatibleCommerceVersions,
       store: true,
     }]);
 
     this.options = { ...this.options, ...answers };
 
-    // Adjusting Sitecore properties
-    this.sitecoreGenerator.options.vagrantBoxName = (this.options.sitecoreCommerceVersion.value || this.options.sitecoreCommerceVersion).vagrantBoxName;
-    this.sitecoreGenerator.options.hostNames = [
-      ...this.sitecoreGenerator.options.hostNames || [],
-      ...commerceSettings.hostNames
-    ];
+    this.options.vagrantBoxName = (this.options.sitecoreCommerceVersion.value || this.options.sitecoreCommerceVersion).vagrantBoxName;
+    this.options.commerceHostNames = commerceSettings.hostNames;
   }
 
   writing() {
-    this.sitecoreGenerator.writing();
-
     super._runPipeline(this.options.sitecoreCommerceVersion.exactVersion, this.destinationPath(), [
       this._copyZips,
       this._copyAll
     ]);
 
     this._addEngineProjectToSolutionFile();
+
+    super._updateFileContent(`${this.destinationPath()}/Vagrantfile`, [
+      c => utils.updateVagrantBoxName(c, this.options.vagrantBoxName),
+      c => utils.addVagrantHostNames(c, this.options.commerceHostNames),
+    ]);
+
+    super._updateFileContent(`${this.destinationPath()}/readme.md`, [
+      c => utils.updateVagrantAddBoxCommand(c, this.options.vagrantBoxName),
+    ]);
   }
 
   /* Copy dlls without any transforms */
@@ -83,25 +88,21 @@ module.exports = class SitecoreCommerceGenerator extends BaseGenerator {
   /* Copy majority of files with regular template transforms */
   _copyAll(rootPath, destinationPath) {
     super._copyTpl(this.templatePath(`${rootPath}/**/*`), destinationPath, {
-      solutionX: this._getOptionsWithFallback(options => options.solutionName),
-      solutionUriX: this._getOptionsWithFallback(options => options.solutionNameUri),
+      solutionX: this.options.solutionName,
+      solutionUriX: this.options.solutionNameUri,
       sitecoreCommerceVersion: this.options.sitecoreCommerceVersion,
       sitecoreCommerceNetFrameworkVersion: this.options.sitecoreCommerceVersion.sitecoreCommerceNetFrameworkVersion,
-      exactVersion: this._getOptionsWithFallback(options => options.sitecoreUpdate).exactVersion,
-      majorVersion: this._getOptionsWithFallback(options => options.sitecoreUpdate).majorVersion,
-      kernelVersion: this._getOptionsWithFallback(options => options.sitecoreUpdate).kernelVersion,
-      netFrameworkVersion: this._getOptionsWithFallback(options => options.sitecoreUpdate).netFrameworkVersion,
-      vagrantBoxNameX: this._getOptionsWithFallback(options => options.vagrantBoxName),
+      exactVersion: this.options.sitecoreUpdate.exactVersion,
+      majorVersion: this.options.sitecoreUpdate.majorVersion,
+      kernelVersion: this.options.sitecoreUpdate.kernelVersion,
+      netFrameworkVersion: this.options.sitecoreUpdate.netFrameworkVersion,
+      vagrantBoxNameX: this.options.vagrantBoxName,
     }, {
       ...super._baseGlobOptions(),
       ignore: [...baseIgnore, ...[ '**/*.zip' ]]
     }, {
         preProcessPath: this._processPathSolutionToken
     });
-  }
-
-  _getOptionsWithFallback(selector) {
-    return selector(this.options) || selector(this.sitecoreGenerator.options);
   }
 
   _processPathSolutionToken(destPath) {
@@ -111,7 +112,7 @@ module.exports = class SitecoreCommerceGenerator extends BaseGenerator {
   _addEngineProjectToSolutionFile() {
     const commerceFolderGuid = uuidv4();
     const destinationPath = this.destinationPath();
-    const solutionName = this._getOptionsWithFallback(options => options.solutionName);
+    const solutionName = this.options.solutionName;
 
     super._updateFileContent(`${destinationPath}\\src\\${solutionName}.sln`, [
       c => solutionUtils.addProject(c, {
@@ -129,11 +130,7 @@ module.exports = class SitecoreCommerceGenerator extends BaseGenerator {
   }
 
   async end() {
-    await this.sitecoreGenerator.end();
-
-    const solutionName = this._getOptionsWithFallback(options => options.solutionName);
-
     console.log('');
-    console.log(`The ${chalk.green.bold("Sitecore.Commerce.ServiceProxy")} module has been created and added to ${chalk.green.bold(solutionName)}`);
+    console.log(`The ${chalk.green.bold("Sitecore.Commerce.ServiceProxy")} module has been created and added to ${chalk.green.bold(this.options.solutionName)}`);
   }
 };
